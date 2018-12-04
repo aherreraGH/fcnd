@@ -93,6 +93,9 @@ def valid_actions(grid, current_node):
     """
 
     # my changes to include diagonal checking
+    print('what is x: ', x)
+    print('what is y: ', y)
+    print('what is grid[x -1, y]: ', grid[x - 1, y])
     if x - 1 < 0:
         if grid[x - 1, y] == 1:
             valid_actions.remove(Action.NORTH)
