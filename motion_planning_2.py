@@ -11,6 +11,8 @@ from udacidrone.connection import MavlinkConnection
 from udacidrone.messaging import MsgID
 from udacidrone.frame_utils import global_to_local
 
+import pickle
+
 from my_utils import *
 
 class States(Enum):
@@ -43,6 +45,9 @@ class MotionPlanning(Drone):
 
     def local_position_callback(self):
         if self.flight_state == States.TAKEOFF:
+            print('in local_position_callback for takeoff')
+            print ('DEBUG: self.local_position[2]: ', self.local_position[2])
+            print('DEBUG: self.target_position[2]: ', self.target_position[2])
             if -1.0 * self.local_position[2] > 0.95 * self.target_position[2]:
                 self.waypoint_transition()
         elif self.flight_state == States.WAYPOINT:
@@ -169,7 +174,7 @@ class MotionPlanning(Drone):
         # Define starting point on the grid (this is just grid center)
         # grid_start = (-north_offset, -east_offset)
         # TODO: convert start position to current position rather than map center
-        grid_start = (current_local_position[0], current_local_position[1])
+        grid_start = (int(current_global_position[0]), int(current_global_position[1]))
 
         # Set goal as some arbitrary position on the grid
         # grid_goal = (-north_offset + 10, -east_offset + 10)
@@ -191,6 +196,7 @@ class MotionPlanning(Drone):
         # Convert path to waypoints
         waypoints = [[p[0] + north_offset, p[1] + east_offset, TARGET_ALTITUDE, 0] for p in path]
         # Set self.waypoints
+
         self.waypoints = waypoints
         # TODO: send waypoints to sim (this is just for visualization of waypoints)
         self.send_waypoints()
